@@ -1,10 +1,11 @@
 #include <stdio.h>
+#include "DateTime.h"
 #include "WinampCommunicator.h"
+
 //#include "Util.h"
 
 int main()
 {
-	//printf("Hello World\n");
 	WinampCommunicator winampCom;
 	
 	if(!winampCom.Init())
@@ -14,15 +15,25 @@ int main()
 	else
 	{
 		printf("Winamp window handle successfully found. Let's give some commands :D\n");
-		//winampCom.PreviousTrack();
-		//printf("%d\n",winampCom.GetTrackLength());
-		char* currentTrackTitle = winampCom.GetCurrentTrackName();
-		printf("Currently playing: %s\n",currentTrackTitle);
-		delete [] currentTrackTitle;
-		/*if(EndsWith("dark horse - katy perry - Winamp"," - Winamp"))
-			printf("Ends with\n");
-		else
-			printf("Doesn't end with\n");*/
+		
+		int i = 0;
+		DateTime totalLen, curPos;
+
+		while(true)
+		{
+			system("cls");
+			totalLen.SetDate(winampCom.GetTrackLength());
+			curPos.SetDate(winampCom.GetPositionOfPlayback()/1000);
+			
+			printf("Currently playing: %s\n", winampCom.GetCurrentTrackName().c_str());
+			printf("Track at: %s/%s\n", curPos.ToString().c_str(), totalLen.ToString().c_str());
+
+			Sleep(1000);
+
+			if(i++ % 10 == 0)
+				winampCom.NextTrack();
+		}
+
 		winampCom.Close();
 	}
 	

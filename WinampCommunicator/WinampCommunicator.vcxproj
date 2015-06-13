@@ -63,10 +63,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="WinampCommunicator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DateTime.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="WinampCommunicator.h" />

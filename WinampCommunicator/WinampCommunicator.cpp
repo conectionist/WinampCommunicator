@@ -18,8 +18,6 @@ WinampCommunicator::~WinampCommunicator(void)
 	}*/
 }
 
-
-
 bool WinampCommunicator::Init()
 {
 	hWinampWindowHandle = FindWindow("Winamp v1.x",NULL);
@@ -44,6 +42,15 @@ void WinampCommunicator::PreviousTrack()
 	SendMessage(hWinampWindowHandle,WM_COMMAND,WPARAM_PREVIOUS_TRACK,0);
 }
 
+void WinampCommunicator::NextTrack()
+{
+	if(!initialized)
+		throw NotInitilizedException();
+
+	SendMessage(hWinampWindowHandle,WM_COMMAND,WPARAM_NEXT_TRACK,0);
+}
+
+/*gets the track length in seconds*/
 long WinampCommunicator::GetTrackLength()
 {
 	if(!initialized)
@@ -73,7 +80,7 @@ bool WinampCommunicator::IsShuffleSet()
 	return lResult ? true : false;
 }
 
-char* WinampCommunicator::GetCurrentTrackName()
+string WinampCommunicator::GetCurrentTrackName()
 {
 	char* trackName = new char[256];
 	GetWindowText(hWinampWindowHandle,trackName,256);

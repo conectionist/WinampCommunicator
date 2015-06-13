@@ -1,6 +1,9 @@
 #pragma once
 
 #include <Windows.h>
+#include <string>
+
+using std::string;
 
 class WinampCommunicator
 {
@@ -15,9 +18,10 @@ public:
 	void Close();
 
 	void PreviousTrack();
+	void NextTrack();
 	long GetTrackLength();
 	long GetPositionOfPlayback();
 	bool IsShuffleSet();
-	char* GetCurrentTrackName(); 
+	string GetCurrentTrackName(); 
 };
 
