@@ -11,11 +11,8 @@ WinampCommunicator::WinampCommunicator(void) : initialized(false)
 
 WinampCommunicator::~WinampCommunicator(void)
 {
-	/*if(hWinampWindowHandle != NULL)
-	{
-		CloseHandle(hWinampWindowHandle);
-		hWinampWindowHandle = NULL;
-	}*/
+	hWinampWindowHandle = NULL;
+	initialized = false;
 }
 
 bool WinampCommunicator::Init()
@@ -26,12 +23,6 @@ bool WinampCommunicator::Init()
 	initialized = !(hWinampWindowHandle == NULL);
 
 	return initialized;
-}
-
-void WinampCommunicator::Close()
-{
-	hWinampWindowHandle = NULL;
-	initialized = false;
 }
 
 void WinampCommunicator::PreviousTrack()

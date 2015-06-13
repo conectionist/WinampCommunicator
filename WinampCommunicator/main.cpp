@@ -10,7 +10,7 @@ int main()
 	
 	if(!winampCom.Init())
 	{
-		printf("Wimamp window not found. Please start (re)winamp\n");
+		printf("Winamp window not found. Please start (re)winamp\n");
 	}
 	else
 	{
@@ -33,8 +33,6 @@ int main()
 			if(i++ % 10 == 0)
 				winampCom.NextTrack();
 		}
-
-		winampCom.Close();
 	}
 	
 
