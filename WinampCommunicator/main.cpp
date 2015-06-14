@@ -2,13 +2,13 @@
 #include "WinampCommunicator.h"
 
 #include <iostream>
+
 using std::cout;
 using std::endl;
 
 int main()
 {
 	WinampCommunicator winampCom;
-	int i = 1;
 	DateTime totalLen, curPos;
 	long trackLen = -1;
 	PlayingStatus playingStatus;
@@ -38,14 +38,11 @@ int main()
 			}
 			
 			cout << "Current track: " << winampCom.GetCurrentTrackName() << endl;
-			cout << "Track at: " << curPos.ToString() << " " << totalLen.ToString() << endl;
+			cout << "Track at: " << curPos.ToString() << "/" << totalLen.ToString() << endl;
 			cout << "Shuffle is " << (winampCom.IsShuffleSet() ? "" : "not ") << "set\n";
 			cout << "Repeat is "  << (winampCom.IsRepeatSet() ? "" : "not ") << "set\n";
 
 			Sleep(1000);
-
-			if(i++ % (2 * 60) == 0)
-				winampCom.NextTrack();
 		}
 		catch(NotInitilizedException)
 		{

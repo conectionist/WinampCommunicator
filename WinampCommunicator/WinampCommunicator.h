@@ -25,6 +25,9 @@ public:
 	void Close();
 
 	void PreviousTrack();
+	void Play();
+	void Pause();
+	void Stop();
 	void NextTrack();
 	long GetTrackLength();
 	long GetPositionOfPlayback();

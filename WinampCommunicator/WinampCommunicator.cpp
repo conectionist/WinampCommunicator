@@ -46,6 +46,30 @@ void WinampCommunicator::PreviousTrack()
 	SendMessage(hWinampWindowHandle,WM_COMMAND,WPARAM_PREVIOUS_TRACK,0);
 }
 
+void WinampCommunicator::Play()
+{
+	if(!IsInitialized())
+		throw NotInitilizedException();
+
+	SendMessage(hWinampWindowHandle, WM_COMMAND, WPARAM_PLAY_TRACK, 0);
+}
+
+void WinampCommunicator::Pause()
+{
+	if(!IsInitialized())
+		throw NotInitilizedException();
+
+	SendMessage(hWinampWindowHandle, WM_COMMAND, WPARAM_PAUSE_TRACK, 0);
+}
+
+void WinampCommunicator::Stop()
+{
+	if(!IsInitialized())
+		throw NotInitilizedException();
+
+	SendMessage(hWinampWindowHandle, WM_COMMAND, WPARAM_STOP_TRACK, 0);
+}
+
 void WinampCommunicator::NextTrack()
 {
 	if(!IsInitialized())
