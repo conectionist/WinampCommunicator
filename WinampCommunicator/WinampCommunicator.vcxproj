@@ -74,6 +74,9 @@
     <ClInclude Include="WinampCommunicator.h" />
     <ClInclude Include="WinampWindowMessages.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="winamp programmin gold.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

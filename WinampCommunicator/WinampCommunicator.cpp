@@ -1,33 +1,46 @@
 #include "WinampCommunicator.h"
-#include "Exceptions.h"
 #include "WinampWindowMessages.h"
 #include "Util.h"
-//#include <stdio.h>
 
-WinampCommunicator::WinampCommunicator(void) : initialized(false)
+WinampCommunicator::WinampCommunicator()
 {
 	hWinampWindowHandle = NULL;
 }
 
-WinampCommunicator::~WinampCommunicator(void)
+WinampCommunicator::~WinampCommunicator()
 {
 	hWinampWindowHandle = NULL;
-	initialized = false;
 }
 
-bool WinampCommunicator::Init()
+bool WinampCommunicator::IsInitialized()
 {
 	hWinampWindowHandle = FindWindow("Winamp v1.x",NULL);
 	
-	// if handle is null, then initialized will be false
-	initialized = !(hWinampWindowHandle == NULL);
+	return hWinampWindowHandle != NULL;
+}
 
-	return initialized;
+PlayingStatus WinampCommunicator::GetPlayingStatus()
+{
+	if(!IsInitialized())
+		throw NotInitilizedException();
+
+	LRESULT lResult = SendMessage(hWinampWindowHandle, WM_USER, 1, WM_USER_GET_PLAYING_STATUS);
+	switch(lResult)
+	{
+	case 1:
+		return PLAYING;
+		break;
+	case 3:
+		return PAUSED;
+		break;
+	default:
+		return STOPPED;
+	}
 }
 
 void WinampCommunicator::PreviousTrack()
 {
-	if(!initialized)
+	if(!IsInitialized())
 		throw NotInitilizedException();
 
 	SendMessage(hWinampWindowHandle,WM_COMMAND,WPARAM_PREVIOUS_TRACK,0);
@@ -35,7 +48,7 @@ void WinampCommunicator::PreviousTrack()
 
 void WinampCommunicator::NextTrack()
 {
-	if(!initialized)
+	if(!IsInitialized())
 		throw NotInitilizedException();
 
 	SendMessage(hWinampWindowHandle,WM_COMMAND,WPARAM_NEXT_TRACK,0);
@@ -44,10 +57,10 @@ void WinampCommunicator::NextTrack()
 /*gets the track length in seconds*/
 long WinampCommunicator::GetTrackLength()
 {
-	if(!initialized)
+	if(!IsInitialized())
 		throw NotInitilizedException();
 
-	return SendMessage(hWinampWindowHandle,WM_USER,1,105);
+	return SendMessage(hWinampWindowHandle, WM_USER, 1, WM_USER_GET_POSITION_OR_LENGTH);
 }
 
 /* get the position of the current playback
@@ -57,22 +70,49 @@ long WinampCommunicator::GetTrackLength()
 */
 long WinampCommunicator::GetPositionOfPlayback()
 {
-	if(!initialized)
+	if(!IsInitialized())
 		throw NotInitilizedException();
 
-	return SendMessage(hWinampWindowHandle,WM_USER,0,105);
+	return SendMessage(hWinampWindowHandle, WM_USER, 0, WM_USER_GET_POSITION_OR_LENGTH);
 }
 
 bool WinampCommunicator::IsShuffleSet()
 {
-	LRESULT lResult = 0;
-	lResult = SendMessage(hWinampWindowHandle,WM_USER,0,250);
+	if(!IsInitialized())
+		throw NotInitilizedException();
 
-	return lResult ? true : false;
+	return SendMessage(hWinampWindowHandle, WM_USER, 0, WM_USER_GET_SHUFFLE) ? true : false;
+}
+
+void WinampCommunicator::SetShuffle(bool b)
+{
+	if(!IsInitialized())
+		throw NotInitilizedException();
+
+	SendMessage(hWinampWindowHandle, WM_USER, (b ? 1 : 0), WM_USER_SET_SHUFFLE);
+}
+
+bool WinampCommunicator::IsRepeatSet()
+{
+	if(!IsInitialized())
+		throw NotInitilizedException();
+
+	return SendMessage(hWinampWindowHandle, WM_USER, 0, WM_USER_GET_REPEAT) ? true : false;
+}
+
+void WinampCommunicator::SetRepeat(bool b)
+{
+	if(!IsInitialized())
+		throw NotInitilizedException();
+
+	SendMessage(hWinampWindowHandle, WM_USER, (b ? 1 : 0), WM_USER_SET_REPEAT);
 }
 
 string WinampCommunicator::GetCurrentTrackName()
 {
+	if(!IsInitialized())
+		throw NotInitilizedException();
+
 	char* trackName = new char[256];
 	GetWindowText(hWinampWindowHandle,trackName,256);
 	RemoveWinampFromTitle(trackName);

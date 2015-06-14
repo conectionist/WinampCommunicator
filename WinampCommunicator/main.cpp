@@ -1,40 +1,57 @@
-#include <stdio.h>
 #include "DateTime.h"
 #include "WinampCommunicator.h"
 
-//#include "Util.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 
 int main()
 {
 	WinampCommunicator winampCom;
-	
-	if(!winampCom.Init())
-	{
-		printf("Winamp window not found. Please start (re)winamp\n");
-	}
-	else
-	{
-		printf("Winamp window handle successfully found. Let's give some commands :D\n");
-		
-		int i = 0;
-		DateTime totalLen, curPos;
+	int i = 1;
+	DateTime totalLen, curPos;
+	long trackLen = -1;
+	PlayingStatus playingStatus;
 
-		while(true)
+	while(true)
+	{
+		system("cls");
+
+		try
 		{
-			system("cls");
-			totalLen.SetDate(winampCom.GetTrackLength());
+			trackLen = winampCom.GetTrackLength();
+			totalLen.SetDate(trackLen > 0 ? trackLen : 0);
 			curPos.SetDate(winampCom.GetPositionOfPlayback()/1000);
+			playingStatus = winampCom.GetPlayingStatus();
+
+			switch(playingStatus)
+			{
+			case PLAYING:
+				cout << "Winamp is playing...\n";
+				break;
+			case PAUSED:
+				cout << "Winamp is paused...\n";
+				break;
+			case STOPPED:
+				cout << "Winamp is stopped...\n";
+				break;
+			}
 			
-			printf("Currently playing: %s\n", winampCom.GetCurrentTrackName().c_str());
-			printf("Track at: %s/%s\n", curPos.ToString().c_str(), totalLen.ToString().c_str());
+			cout << "Current track: " << winampCom.GetCurrentTrackName() << endl;
+			cout << "Track at: " << curPos.ToString() << " " << totalLen.ToString() << endl;
+			cout << "Shuffle is " << (winampCom.IsShuffleSet() ? "" : "not ") << "set\n";
+			cout << "Repeat is "  << (winampCom.IsRepeatSet() ? "" : "not ") << "set\n";
 
 			Sleep(1000);
 
-			if(i++ % 10 == 0)
+			if(i++ % (2 * 60) == 0)
 				winampCom.NextTrack();
 		}
+		catch(NotInitilizedException)
+		{
+			printf("Winamp window not found. Please start (re)winamp\n");
+		}
 	}
-	
 
 	return 0;
 }

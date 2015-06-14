@@ -55,4 +55,19 @@
 #define WPARAM_PLAY_AUDIO_CD							40323
 
 //messages used with WM_USER
-//#define 
+#define WM_USER_GET_VERSION				0
+#define WM_USER_GET_PLAYING_STATUS		104
+#define WM_USER_GET_POSITION_OR_LENGTH	105
+#define WM_USER_SEEK_POSITION			106
+#define WM_USER_SET_PLAYLIST_POSITION	121
+#define WM_USER_SET_VOLUME				122
+#define WM_USER_GET_PLAYLIST_LENGTH		124
+#define WM_USER_GET_PLAYLIST_POSITION	125
+#define WM_USER_RESTART_WINAMP			135
+
+// only supposed to work in plug-ins
+#define WM_USER_GET_SHUFFLE				250
+#define WM_USER_GET_REPEAT				251
+#define WM_USER_SET_SHUFFLE				252
+#define WM_USER_SET_REPEAT				253
+
