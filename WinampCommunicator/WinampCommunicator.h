@@ -16,14 +16,10 @@ enum PlayingStatus
 
 class WinampCommunicator
 {
-private:
-	HWND hWinampWindowHandle;
-
 public:
 	WinampCommunicator();
 	~WinampCommunicator();
-	void Close();
-
+	
 	void PreviousTrack();
 	void Play();
 	void Pause();
@@ -41,7 +37,10 @@ public:
 
 	string GetCurrentTrackName();
 
-private:
-	bool IsInitialized();
+protected:
+	void ValidateWindowHandle();
+
+protected:
+	HWND m_hWinampWindowHandle;
 };
 

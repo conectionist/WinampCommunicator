@@ -1,21 +1,21 @@
 #ifndef UTIL_H
 #define UTIL_H
-#include <string.h>
 
-bool EndsWith(char* str, char* substr)
+#include <string>
+
+inline bool EndsWith(std::string const & value, std::string const & ending)
 {
-	char* temp = strstr(str,substr);
-
-	return (temp != NULL && strlen(temp) == strlen(str + (temp - str)));
+	if (ending.size() > value.size()) return false;
+	return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
 }
 
-void RemoveWinampFromTitle(char* title)
+void RemoveWinampFromTitle(string& title)
 {
-	if(title == NULL)
+	if(title.size() == 0)
 		return;
 
 	if(EndsWith(title," - Winamp"))
-		title[strlen(title) - strlen(" - Winamp")] = '\0';
+		title.erase(title.size() - strlen(" - Winamp"));
 }
 
 #endif

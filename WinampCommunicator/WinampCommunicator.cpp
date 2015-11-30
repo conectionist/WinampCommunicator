@@ -4,27 +4,19 @@
 
 WinampCommunicator::WinampCommunicator()
 {
-	hWinampWindowHandle = NULL;
+	m_hWinampWindowHandle = NULL;
 }
 
 WinampCommunicator::~WinampCommunicator()
 {
-	hWinampWindowHandle = NULL;
-}
-
-bool WinampCommunicator::IsInitialized()
-{
-	hWinampWindowHandle = FindWindow("Winamp v1.x",NULL);
-	
-	return hWinampWindowHandle != NULL;
+	m_hWinampWindowHandle = NULL;
 }
 
 PlayingStatus WinampCommunicator::GetPlayingStatus()
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	LRESULT lResult = SendMessage(hWinampWindowHandle, WM_USER, 1, WM_USER_GET_PLAYING_STATUS);
+	LRESULT lResult = SendMessage(m_hWinampWindowHandle, WM_USER, 1, WM_USER_GET_PLAYING_STATUS);
 	switch(lResult)
 	{
 	case 1:
@@ -40,51 +32,45 @@ PlayingStatus WinampCommunicator::GetPlayingStatus()
 
 void WinampCommunicator::PreviousTrack()
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	SendMessage(hWinampWindowHandle,WM_COMMAND,WPARAM_PREVIOUS_TRACK,0);
+	SendMessage(m_hWinampWindowHandle,WM_COMMAND,WPARAM_PREVIOUS_TRACK,0);
 }
 
 void WinampCommunicator::Play()
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	SendMessage(hWinampWindowHandle, WM_COMMAND, WPARAM_PLAY_TRACK, 0);
+	SendMessage(m_hWinampWindowHandle, WM_COMMAND, WPARAM_PLAY_TRACK, 0);
 }
 
 void WinampCommunicator::Pause()
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	SendMessage(hWinampWindowHandle, WM_COMMAND, WPARAM_PAUSE_TRACK, 0);
+	SendMessage(m_hWinampWindowHandle, WM_COMMAND, WPARAM_PAUSE_TRACK, 0);
 }
 
 void WinampCommunicator::Stop()
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	SendMessage(hWinampWindowHandle, WM_COMMAND, WPARAM_STOP_TRACK, 0);
+	SendMessage(m_hWinampWindowHandle, WM_COMMAND, WPARAM_STOP_TRACK, 0);
 }
 
 void WinampCommunicator::NextTrack()
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	SendMessage(hWinampWindowHandle,WM_COMMAND,WPARAM_NEXT_TRACK,0);
+	SendMessage(m_hWinampWindowHandle,WM_COMMAND,WPARAM_NEXT_TRACK,0);
 }
 
 /*gets the track length in seconds*/
 long WinampCommunicator::GetTrackLength()
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	return SendMessage(hWinampWindowHandle, WM_USER, 1, WM_USER_GET_POSITION_OR_LENGTH);
+	return SendMessage(m_hWinampWindowHandle, WM_USER, 1, WM_USER_GET_POSITION_OR_LENGTH);
 }
 
 /* get the position of the current playback
@@ -94,51 +80,60 @@ long WinampCommunicator::GetTrackLength()
 */
 long WinampCommunicator::GetPositionOfPlayback()
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	return SendMessage(hWinampWindowHandle, WM_USER, 0, WM_USER_GET_POSITION_OR_LENGTH);
+	return SendMessage(m_hWinampWindowHandle, WM_USER, 0, WM_USER_GET_POSITION_OR_LENGTH);
 }
 
 bool WinampCommunicator::IsShuffleSet()
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	return SendMessage(hWinampWindowHandle, WM_USER, 0, WM_USER_GET_SHUFFLE) ? true : false;
+	return SendMessage(m_hWinampWindowHandle, WM_USER, 0, WM_USER_GET_SHUFFLE) ? true : false;
 }
 
 void WinampCommunicator::SetShuffle(bool b)
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	SendMessage(hWinampWindowHandle, WM_USER, (b ? 1 : 0), WM_USER_SET_SHUFFLE);
+	SendMessage(m_hWinampWindowHandle, WM_USER, (b ? 1 : 0), WM_USER_SET_SHUFFLE);
 }
 
 bool WinampCommunicator::IsRepeatSet()
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	return SendMessage(hWinampWindowHandle, WM_USER, 0, WM_USER_GET_REPEAT) ? true : false;
+	return SendMessage(m_hWinampWindowHandle, WM_USER, 0, WM_USER_GET_REPEAT) ? true : false;
 }
 
 void WinampCommunicator::SetRepeat(bool b)
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	SendMessage(hWinampWindowHandle, WM_USER, (b ? 1 : 0), WM_USER_SET_REPEAT);
+	SendMessage(m_hWinampWindowHandle, WM_USER, (b ? 1 : 0), WM_USER_SET_REPEAT);
 }
 
 string WinampCommunicator::GetCurrentTrackName()
 {
-	if(!IsInitialized())
-		throw NotInitilizedException();
+	ValidateWindowHandle();
 
-	char* trackName = new char[256];
-	GetWindowText(hWinampWindowHandle,trackName,256);
-	RemoveWinampFromTitle(trackName);
-	return trackName;
+	char trackName[256];
+	GetWindowText(m_hWinampWindowHandle,trackName,256);
+
+	string sTrackName = trackName;
+
+	RemoveWinampFromTitle(sTrackName);
+
+	return sTrackName;
+}
+
+void WinampCommunicator::ValidateWindowHandle()
+{
+	if(m_hWinampWindowHandle == NULL || !IsWindow(m_hWinampWindowHandle))
+	{
+		m_hWinampWindowHandle = FindWindow("Winamp v1.x",NULL);
+	}
+
+	if(m_hWinampWindowHandle == NULL)
+		throw NotRunningException();
 }

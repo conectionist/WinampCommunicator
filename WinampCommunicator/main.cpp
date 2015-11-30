@@ -41,13 +41,13 @@ int main()
 			cout << "Track at: " << curPos.ToString() << "/" << totalLen.ToString() << endl;
 			cout << "Shuffle is " << (winampCom.IsShuffleSet() ? "" : "not ") << "set\n";
 			cout << "Repeat is "  << (winampCom.IsRepeatSet() ? "" : "not ") << "set\n";
-
-			Sleep(1000);
 		}
-		catch(NotInitilizedException)
+		catch(const NotRunningException& nrEx)
 		{
-			printf("Winamp window not found. Please start (re)winamp\n");
+			cout << nrEx.GetErrorMessage() << endl;
 		}
+
+		Sleep(1000);
 	}
 
 	return 0;
