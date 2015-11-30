@@ -39,7 +39,7 @@ void HandleMessage(string msg)
 		else
 			printf("Unknown command: >>>%s<<<\n", msg.c_str());
 	}
-	catch(NotInitilizedException)
+	catch(NotRunningException)
 	{
 
 	}

@@ -11,7 +11,7 @@ int main()
 	WinampCommunicator winampCom;
 	DateTime totalLen, curPos;
 	long trackLen = -1;
-	PlayingStatus playingStatus;
+	string sPlayingStatus;
 
 	while(true)
 	{
@@ -22,22 +22,11 @@ int main()
 			trackLen = winampCom.GetTrackLength();
 			totalLen.SetDate(trackLen > 0 ? trackLen : 0);
 			curPos.SetDate(winampCom.GetPositionOfPlayback()/1000);
-			playingStatus = winampCom.GetPlayingStatus();
+			sPlayingStatus = winampCom.GetPlayingStatusAsString();
 
-			switch(playingStatus)
-			{
-			case PLAYING:
-				cout << "Winamp is playing...\n";
-				break;
-			case PAUSED:
-				cout << "Winamp is paused...\n";
-				break;
-			case STOPPED:
-				cout << "Winamp is stopped...\n";
-				break;
-			}
-			
-			cout << "Current track: " << winampCom.GetCurrentTrackName() << endl;
+			cout << "Winamp is " << sPlayingStatus << "...\n\n";
+						
+			cout << "Current track:\n" << winampCom.GetCurrentTrackName() << "\n\n";
 			cout << "Track at: " << curPos.ToString() << "/" << totalLen.ToString() << endl;
 			cout << "Shuffle is " << (winampCom.IsShuffleSet() ? "" : "not ") << "set\n";
 			cout << "Repeat is "  << (winampCom.IsRepeatSet() ? "" : "not ") << "set\n";

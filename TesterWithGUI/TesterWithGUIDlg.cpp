@@ -97,7 +97,7 @@ void CTesterWithGUIDlg::OnBnClickedButtonNext()
 	{
 		winampCom.NextTrack();
 	}
-	catch(NotInitilizedException)
+	catch(NotRunningException)
 	{
 
 	}

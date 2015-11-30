@@ -30,6 +30,23 @@ PlayingStatus WinampCommunicator::GetPlayingStatus()
 	}
 }
 
+string WinampCommunicator::GetPlayingStatusAsString()
+{
+	PlayingStatus playingStatus = GetPlayingStatus();
+
+	switch(playingStatus)
+	{
+	case PLAYING:
+		return "playing";
+	case PAUSED:
+		return "paused";
+	case STOPPED:
+		return "stopped";
+	default:
+		return "N/A";
+	}
+}
+
 void WinampCommunicator::PreviousTrack()
 {
 	ValidateWindowHandle();

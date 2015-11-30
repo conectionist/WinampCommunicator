@@ -9,6 +9,7 @@ using std::string;
 
 enum PlayingStatus
 {
+	INVALID,
 	PLAYING,
 	PAUSED,
 	STOPPED
@@ -29,6 +30,7 @@ public:
 	long GetPositionOfPlayback();
 
 	PlayingStatus GetPlayingStatus();
+	string GetPlayingStatusAsString();
 
 	bool IsShuffleSet();
 	void SetShuffle(bool b);
