@@ -5,6 +5,7 @@
 #pragma once
 
 #include <WinampCommunicator.h>
+#include "afxcmn.h"
 
 // CTesterWithGUIDlg dialog
 class CTesterWithGUIDlg : public CDialogEx
@@ -33,4 +34,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButtonNext();
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	CSliderCtrl m_Slider;
 };

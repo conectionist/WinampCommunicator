@@ -28,12 +28,14 @@ CTesterWithGUIDlg::CTesterWithGUIDlg(CWnd* pParent /*=NULL*/)
 void CTesterWithGUIDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_SLIDER1, m_Slider);
 }
 
 BEGIN_MESSAGE_MAP(CTesterWithGUIDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON_NEXT, &CTesterWithGUIDlg::OnBnClickedButtonNext)
+	ON_WM_HSCROLL()
 END_MESSAGE_MAP()
 
 
@@ -49,6 +51,10 @@ BOOL CTesterWithGUIDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+	m_Slider.SetRangeMin(0, false);
+	m_Slider.SetRangeMax(100, false);
+
+	UpdateData(FALSE);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -101,4 +107,23 @@ void CTesterWithGUIDlg::OnBnClickedButtonNext()
 	{
 
 	}
+}
+
+void CTesterWithGUIDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	CString m_SliderValue;
+
+	if (nSBCode == SB_THUMBPOSITION) {
+		m_SliderValue.Format(L"Volume: %ld", nPos);
+		GetDlgItem(IDC_EDIT1)->SetWindowTextW(m_SliderValue);
+		UpdateData(false);
+
+		winampCom.SetVolume(nPos);
+	}
+
+	else {
+		CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
+	}
+
+	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
 }
