@@ -37,6 +37,10 @@ public:
 	bool IsRepeatSet();
 	void SetRepeat(bool b);
 
+	void RaiseVolume(UINT percent = 1);
+	void LowerVolume(UINT percent = 1);
+	void SetVolume(UINT percent);
+
 	string GetCurrentTrackName();
 
 protected:

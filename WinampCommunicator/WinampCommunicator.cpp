@@ -130,12 +130,28 @@ void WinampCommunicator::SetRepeat(bool b)
 	SendMessage(m_hWinampWindowHandle, WM_USER, (b ? 1 : 0), WM_USER_SET_REPEAT);
 }
 
+/* 
+ * Sets the volume percentage
+ * must be between 0 and 100
+ * UINT ensures value is positive (at least 0)
+ * if received value is higher than 100, it is set to 100
+ */
+void WinampCommunicator::SetVolume(UINT percent)
+{
+	ValidateWindowHandle();
+
+	if (percent > 100)
+		percent = 100;
+
+	SendMessage(m_hWinampWindowHandle, WM_USER, percent *  255 / 100 , WM_USER_SET_VOLUME);
+}
+
 string WinampCommunicator::GetCurrentTrackName()
 {
 	ValidateWindowHandle();
 
 	char trackName[256];
-	GetWindowText(m_hWinampWindowHandle,trackName,256);
+	GetWindowTextA(m_hWinampWindowHandle,trackName,256);
 
 	string sTrackName = trackName;
 
@@ -148,7 +164,7 @@ void WinampCommunicator::ValidateWindowHandle()
 {
 	if(m_hWinampWindowHandle == NULL || !IsWindow(m_hWinampWindowHandle))
 	{
-		m_hWinampWindowHandle = FindWindow("Winamp v1.x",NULL);
+		m_hWinampWindowHandle = FindWindowA("Winamp v1.x",NULL);
 	}
 
 	if(m_hWinampWindowHandle == NULL)
