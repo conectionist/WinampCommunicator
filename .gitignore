@@ -30,3 +30,4 @@ _ReSharper*/
 TesterWithGUI/ReadMe.txt
 *.opensdf
 *.sdf
+*.ipch
