@@ -15,13 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WinampCommunicator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DateTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,16 +23,7 @@
     <ClInclude Include="WinampCommunicator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Exceptions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WinampWindowMessages.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Util.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DateTime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

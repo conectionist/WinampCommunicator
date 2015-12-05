@@ -1,5 +1,7 @@
 #pragma once
 
+#define DllExport   __declspec( dllexport )
+
 #include <Windows.h>
 #include <string>
 
@@ -15,7 +17,7 @@ enum PlayingStatus
 	STOPPED
 };
 
-class WinampCommunicator
+class DllExport WinampCommunicator
 {
 public:
 	WinampCommunicator();
