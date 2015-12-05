@@ -15,6 +15,8 @@ public:
 protected:
 	void Run();
 	void HandleIncomingConnections();
+	bool WaitForNewClient();
+	void ReceiveMessage();
 	virtual void HandleReceivedMessage(string message) = 0;
 	
 protected:

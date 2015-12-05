@@ -1,5 +1,6 @@
 #include "WinampRequestListener.h"
 #include "WinampCommunicator.h"
+#include "Util.h"
 
 WinampRequestListener::WinampRequestListener() : Server(4567, "Winamp_Server_Shutdown_Event", "D:\\winamp_service_logs.txt")
 {
@@ -18,7 +19,12 @@ WinampRequestListener::~WinampRequestListener()
 void WinampRequestListener::HandleReceivedMessage(string msg)
 {
 	// remove the trailing new line
-	msg.erase(msg.end() - 1);
+	if (EndsWith(msg, "\n"))
+		msg.erase(msg.end() - 1);
+
+	// remove the trailing new line
+	if (EndsWith(msg, "\r"))
+		msg.erase(msg.end() - 1);
 
 	WinampCommand cmd = TranslateReceivedMessageIntoCommand(msg);
 

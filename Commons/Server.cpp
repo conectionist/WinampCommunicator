@@ -102,9 +102,6 @@ void Server::Run()
 
 void Server::HandleIncomingConnections()
 {
-	char recvbuf[DEFAULT_BUFLEN];
-	int recvbuflen = DEFAULT_BUFLEN;
-
 	int iResult;
 
 	u_long iMode = 1;
@@ -112,36 +109,8 @@ void Server::HandleIncomingConnections()
 
 	while ALIVE
 	{
-		while (m_ClientSocket == SOCKET_ERROR)
-		{
-			// Accept a client socket
-			m_ClientSocket = accept(m_ListenSocket, NULL, NULL);
-
-			int nError = WSAGetLastError();
-			if (nError != WSAEWOULDBLOCK && nError != 0)
-			{
-				closesocket(m_ClientSocket);
-				WSACleanup();
-
-				throw Win32Exception("accept", WSAGetLastError());
-			}
-			else
-			{
-				Sleep(1000);
-
-				if ALIVE
-				{
-					continue;
-				}
-				else
-				{
-					closesocket(m_ClientSocket);
-					WSACleanup();
-
-					return;
-				}
-			}
-		}
+		if (!WaitForNewClient())
+			return;
 
 		ioctlsocket(m_ClientSocket, FIONBIO, &iMode);
 		if (m_ClientSocket == INVALID_SOCKET)
@@ -156,47 +125,7 @@ void Server::HandleIncomingConnections()
 		closesocket(m_ListenSocket);
 
 		// Receive until the peer shuts down the connection
-		do
-		{
-			ZeroMemory(recvbuf, sizeof(recvbuf));
-			iResult = recv(m_ClientSocket, recvbuf, recvbuflen, 0);
-			int nError = WSAGetLastError();
-
-			if (iResult > 0)
-			{
-				Log(string("Received: ") + recvbuf);
-
-				HandleReceivedMessage(recvbuf);
-			}
-			else if (iResult == 0)
-			{
-				Log("Connection closing...");
-			}
-			else if (nError != WSAEWOULDBLOCK && nError != 0)
-			{
-				closesocket(m_ClientSocket);
-				WSACleanup();
-
-				throw Win32Exception("recv", WSAGetLastError());
-			}
-			else
-			{
-				Sleep(1000);
-
-				if ALIVE
-				{
-					continue;
-				}
-				else
-				{
-					closesocket(m_ClientSocket);
-					WSACleanup();
-
-					return;
-				}
-			}
-
-		} while (iResult > 0);
+		ReceiveMessage();
 
 		// shutdown the connection since we're done
 		iResult = shutdown(m_ClientSocket, SD_SEND);
@@ -212,4 +141,90 @@ void Server::HandleIncomingConnections()
 		closesocket(m_ClientSocket);
 		WSACleanup();
 	}
+}
+
+bool Server::WaitForNewClient()
+{
+	while (m_ClientSocket == SOCKET_ERROR)
+	{
+		// Accept a client socket
+		m_ClientSocket = accept(m_ListenSocket, NULL, NULL);
+
+		int nError = WSAGetLastError();
+		if (nError != WSAEWOULDBLOCK && nError != 0)
+		{
+			closesocket(m_ClientSocket);
+			WSACleanup();
+
+			throw Win32Exception("accept", WSAGetLastError());
+		}
+		else
+		{
+			Sleep(1000);
+
+			if ALIVE
+			{
+				continue;
+			}
+			else
+			{
+				closesocket(m_ClientSocket);
+				WSACleanup();
+
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+void Server::ReceiveMessage()
+{
+	char recvbuf[DEFAULT_BUFLEN];
+	int recvbuflen = DEFAULT_BUFLEN;
+
+	int iResult;
+
+	do
+	{
+		ZeroMemory(recvbuf, sizeof(recvbuf));
+		iResult = recv(m_ClientSocket, recvbuf, recvbuflen, 0);
+		int nError = WSAGetLastError();
+
+		if (iResult > 0)
+		{
+			Log(string("Received: ") + recvbuf);
+
+			HandleReceivedMessage(recvbuf);
+		}
+		/*else if (iResult == 0)
+		{
+			Log("Connection closing...");
+		}*/
+		else if (nError != WSAEWOULDBLOCK && nError != 0)
+		{
+			closesocket(m_ClientSocket);
+			WSACleanup();
+
+			throw Win32Exception("recv", WSAGetLastError());
+		}
+		else
+		{
+			Sleep(1000);
+
+			if ALIVE
+			{
+				continue;
+			}
+			else
+			{
+				closesocket(m_ClientSocket);
+				WSACleanup();
+
+				return;
+			}
+		}
+
+	} while (true);
 }
