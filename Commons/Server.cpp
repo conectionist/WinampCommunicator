@@ -112,6 +112,8 @@ void Server::HandleIncomingConnections()
 		if (!WaitForNewClient())
 			return;
 
+		Log("Client connected");
+
 		ioctlsocket(m_ClientSocket, FIONBIO, &iMode);
 		if (m_ClientSocket == INVALID_SOCKET)
 		{
