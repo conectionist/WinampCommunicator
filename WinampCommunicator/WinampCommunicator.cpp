@@ -130,7 +130,29 @@ void WinampCommunicator::SetRepeat(bool b)
 	SendMessage(m_hWinampWindowHandle, WM_USER, (b ? 1 : 0), WM_USER_SET_REPEAT);
 }
 
-/* 
+void WinampCommunicator::RaiseVolume(UINT percent /*= 1*/)
+{
+	ValidateWindowHandle();
+
+	if (percent > 100)
+		percent = 100;
+
+	for (UINT i = 0; i < percent; i++)
+		SendMessage(m_hWinampWindowHandle, WM_COMMAND, WPARAM_RAISE_VOLUME_BY_1_PERCENT, 0);
+}
+
+void WinampCommunicator::LowerVolume(UINT percent /*= 1*/)
+{
+	ValidateWindowHandle();
+
+	if (percent > 100)
+		percent = 100;
+
+	for (UINT i = 0; i < percent; i++)
+		SendMessage(m_hWinampWindowHandle, WM_COMMAND, WPARAM_LOWER_VOLUME_BY_1_PERCENT, 0);
+}
+
+/*
  * Sets the volume percentage
  * must be between 0 and 100
  * UINT ensures value is positive (at least 0)
