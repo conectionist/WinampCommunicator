@@ -38,9 +38,23 @@ public:
 
 class Win32Exception : public BaseException
 {
+	static string buildMessage(string operation, int errCode, string
+		sAdditionalInfo)
+	{
+		string message;
+		message += "Operation \"" + operation + "\" failed with error code ";
+		message += std::to_string(errCode);
+
+		if (!sAdditionalInfo.empty())
+			message += "\nAdditional info: " + sAdditionalInfo;
+		return message;
+	}
+
 public:
-	Win32Exception(string operation, int errCode) : BaseException("Operation \"" + operation + "\" failed with error code " + std::to_string(errCode))
-	{}
+	Win32Exception(string operation, int errCode, string sAdditionalInfo = "") :
+		BaseException(buildMessage(operation, errCode, sAdditionalInfo))
+	{
+	}
 };
 
 #endif
