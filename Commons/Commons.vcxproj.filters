@@ -15,29 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ILogable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Runnable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Server.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DateTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ILogable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Runnable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Server.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DateTime.h">
       <Filter>Header Files</Filter>
     </ClInclude>

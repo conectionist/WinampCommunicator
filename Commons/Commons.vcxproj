@@ -12,16 +12,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DateTime.cpp" />
-    <ClCompile Include="ILogable.cpp" />
-    <ClCompile Include="Runnable.cpp" />
-    <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DateTime.h" />
     <ClInclude Include="Exceptions.h" />
-    <ClInclude Include="ILogable.h" />
-    <ClInclude Include="Runnable.h" />
-    <ClInclude Include="Server.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
