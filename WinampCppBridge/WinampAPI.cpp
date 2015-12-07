@@ -1,5 +1,8 @@
 #include "WinampAPI.h"
 
+// !!! DON'T FORGET TO ADD EXCEPTION HANDLING IN EACH FUNCTION NEXT TIME !!!
+// if winamp is not running, any of the following functions will cause the application to crash
+
 extern "C"
 {
 	DLLEXPORT void PreviousTrack()
