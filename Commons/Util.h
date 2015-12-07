@@ -41,7 +41,6 @@ void EnableDebugPriv()
 	CloseHandle(hToken);
 }
 
-
 HANDLE GetHandleToProcess(string sProcessName)
 {
 	EnableDebugPriv();
