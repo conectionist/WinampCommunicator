@@ -30,16 +30,16 @@
 // 
 
 // Internal name of the service
-#define SERVICE_NAME             L"Winamp Service"
+#define SERVICE_NAME             "Winamp Service"
 
 // Displayed name of the service
-#define SERVICE_DISPLAY_NAME     L"Winamp Service"
+#define SERVICE_DISPLAY_NAME     "Winamp Service"
 
 // Service start options.
 #define SERVICE_START_TYPE       SERVICE_AUTO_START
 
 // List of service dependencies - "dep1\0dep2\0\0"
-#define SERVICE_DEPENDENCIES     L""
+#define SERVICE_DEPENDENCIES     ""
 
 // The name of the account under which the service should run
 #define SERVICE_ACCOUNT          NULL
@@ -63,11 +63,11 @@
 //  COMMENTS:
 //    wmain() either performs the command line task, or run the service.
 //
-int wmain(int argc, wchar_t *argv[])
+int main(int argc, char *argv[])
 {
     if ((argc > 1) && ((*argv[1] == L'-' || (*argv[1] == L'/'))))
     {
-        if (_wcsicmp(L"install", argv[1] + 1) == 0)
+        if (strcmp("install", argv[1] + 1) == 0)
         {
             // Install the service when the command is 
             // "-install" or "/install".
@@ -80,7 +80,7 @@ int wmain(int argc, wchar_t *argv[])
                 SERVICE_PASSWORD            // Password of the account
                 );
         }
-        else if (_wcsicmp(L"remove", argv[1] + 1) == 0)
+        else if (strcmp("remove", argv[1] + 1) == 0)
         {
             // Uninstall the service when the command is 
             // "-remove" or "/remove".
@@ -89,14 +89,14 @@ int wmain(int argc, wchar_t *argv[])
     }
     else
     {
-        wprintf(L"Parameters:\n");
-        wprintf(L" -install  to install the service.\n");
-        wprintf(L" -remove   to remove the service.\n");
+        printf("Parameters:\n");
+        printf(" -install  to install the service.\n");
+        printf(" -remove   to remove the service.\n");
 
         WinampService service(SERVICE_NAME);
         if (!CServiceBase::Run(service))
         {
-            wprintf(L"Service failed to run w/err 0x%08lx\n", GetLastError());
+            printf("Service failed to run w/err 0x%08lx\n", GetLastError());
         }
     }
 

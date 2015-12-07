@@ -8,7 +8,7 @@ class WinampService : public CServiceBase
 {
 public:
 
-    WinampService(PWSTR pszServiceName, 
+    WinampService(PSTR pszServiceName, 
         BOOL fCanStop = TRUE, 
         BOOL fCanShutdown = TRUE, 
         BOOL fCanPauseContinue = FALSE);
@@ -16,13 +16,8 @@ public:
 
 protected:
 
-    virtual void OnStart(DWORD dwArgc, PWSTR *pszArgv);
+    virtual void OnStart(DWORD dwArgc, PSTR *pszArgv);
     virtual void OnStop();
 
 	WinampRequestListener* m_pWinampRequestListener;
-
-private:
-
-    BOOL m_fStopping;
-    HANDLE m_hStoppedEvent;
 };

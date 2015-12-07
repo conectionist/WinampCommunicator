@@ -35,7 +35,7 @@ public:
     // fCanShutdown and fCanPauseContinue) allow you to specify whether the 
     // service can be stopped, paused and continued, or be notified when 
     // system shutdown occurs.
-    CServiceBase(PWSTR pszServiceName, 
+    CServiceBase(PSTR pszServiceName, 
         BOOL fCanStop = TRUE, 
         BOOL fCanShutdown = TRUE, 
         BOOL fCanPauseContinue = FALSE);
@@ -52,7 +52,7 @@ protected:
     // sent to the service by the SCM or when the operating system starts 
     // (for a service that starts automatically). Specifies actions to take 
     // when the service starts.
-    virtual void OnStart(DWORD dwArgc, PWSTR *pszArgv);
+    virtual void OnStart(DWORD dwArgc, PSTR *pszArgv);
 
     // When implemented in a derived class, executes when a Stop command is 
     // sent to the service by the SCM. Specifies actions to take when a 
@@ -80,24 +80,24 @@ protected:
         DWORD dwWaitHint = 0);
 
     // Log a message to the Application event log.
-    void WriteEventLogEntry(PWSTR pszMessage, WORD wType);
+    void WriteEventLogEntry(PSTR pszMessage, WORD wType);
 
     // Log an error message to the Application event log.
-    void WriteErrorLogEntry(PWSTR pszFunction, 
+    void WriteErrorLogEntry(PSTR pszFunction, 
         DWORD dwError = GetLastError());
 
 private:
 
     // Entry point for the service. It registers the handler function for the 
     // service and starts the service.
-    static void WINAPI ServiceMain(DWORD dwArgc, LPWSTR *lpszArgv);
+    static void WINAPI ServiceMain(DWORD dwArgc, LPSTR *lpszArgv);
 
     // The function is called by the SCM whenever a control code is sent to 
     // the service.
     static void WINAPI ServiceCtrlHandler(DWORD dwCtrl);
 
     // Start the service.
-    void Start(DWORD dwArgc, PWSTR *pszArgv);
+    void Start(DWORD dwArgc, PSTR *pszArgv);
     
     // Pause the service.
     void Pause();
@@ -112,7 +112,7 @@ private:
     static CServiceBase *s_service;
 
     // The name of the service
-    PWSTR m_name;
+    PSTR m_name;
 
     // The status of the service
     SERVICE_STATUS m_status;

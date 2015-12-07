@@ -64,7 +64,7 @@ BOOL CServiceBase::Run(CServiceBase &service)
 
 
 //
-//   FUNCTION: CServiceBase::ServiceMain(DWORD, PWSTR *)
+//   FUNCTION: CServiceBase::ServiceMain(DWORD, PSTR *)
 //
 //   PURPOSE: Entry point for the service. It registers the handler function 
 //   for the service and starts the service.
@@ -73,7 +73,7 @@ BOOL CServiceBase::Run(CServiceBase &service)
 //   * dwArgc   - number of command line arguments
 //   * lpszArgv - array of command line arguments
 //
-void WINAPI CServiceBase::ServiceMain(DWORD dwArgc, PWSTR *pszArgv)
+void WINAPI CServiceBase::ServiceMain(DWORD dwArgc, PSTR *pszArgv)
 {
     assert(s_service != NULL);
 
@@ -132,7 +132,7 @@ void WINAPI CServiceBase::ServiceCtrlHandler(DWORD dwCtrl)
 #pragma region Service Constructor and Destructor
 
 //
-//   FUNCTION: CServiceBase::CServiceBase(PWSTR, BOOL, BOOL, BOOL)
+//   FUNCTION: CServiceBase::CServiceBase(PSTR, BOOL, BOOL, BOOL)
 //
 //   PURPOSE: The constructor of CServiceBase. It initializes a new instance 
 //   of the CServiceBase class. The optional parameters (fCanStop, 
@@ -146,13 +146,13 @@ void WINAPI CServiceBase::ServiceCtrlHandler(DWORD dwCtrl)
 //   * fCanShutdown - the service is notified when system shutdown occurs
 //   * fCanPauseContinue - the service can be paused and continued
 //
-CServiceBase::CServiceBase(PWSTR pszServiceName, 
+CServiceBase::CServiceBase(PSTR pszServiceName, 
                            BOOL fCanStop, 
                            BOOL fCanShutdown, 
                            BOOL fCanPauseContinue)
 {
     // Service name must be a valid string and cannot be NULL.
-    m_name = (pszServiceName == NULL) ? L"" : pszServiceName;
+    m_name = (pszServiceName == NULL) ? "" : pszServiceName;
 
     m_statusHandle = NULL;
 
@@ -194,7 +194,7 @@ CServiceBase::~CServiceBase(void)
 #pragma region Service Start, Stop, Pause, Continue, and Shutdown
 
 //
-//   FUNCTION: CServiceBase::Start(DWORD, PWSTR *)
+//   FUNCTION: CServiceBase::Start(DWORD, PSTR *)
 //
 //   PURPOSE: The function starts the service. It calls the OnStart virtual 
 //   function in which you can specify the actions to take when the service 
@@ -205,7 +205,7 @@ CServiceBase::~CServiceBase(void)
 //   * dwArgc   - number of command line arguments
 //   * lpszArgv - array of command line arguments
 //
-void CServiceBase::Start(DWORD dwArgc, PWSTR *pszArgv)
+void CServiceBase::Start(DWORD dwArgc, PSTR *pszArgv)
 {
     try
     {
@@ -221,7 +221,7 @@ void CServiceBase::Start(DWORD dwArgc, PWSTR *pszArgv)
     catch (DWORD dwError)
     {
         // Log the error.
-        WriteErrorLogEntry(L"Service Start", dwError);
+        WriteErrorLogEntry("Service Start", dwError);
 
         // Set the service status to be stopped.
         SetServiceStatus(SERVICE_STOPPED, dwError);
@@ -229,7 +229,7 @@ void CServiceBase::Start(DWORD dwArgc, PWSTR *pszArgv)
     catch (...)
     {
         // Log the error.
-        WriteEventLogEntry(L"Service failed to start.", EVENTLOG_ERROR_TYPE);
+        WriteEventLogEntry("Service failed to start.", EVENTLOG_ERROR_TYPE);
 
         // Set the service status to be stopped.
         SetServiceStatus(SERVICE_STOPPED);
@@ -238,7 +238,7 @@ void CServiceBase::Start(DWORD dwArgc, PWSTR *pszArgv)
 
 
 //
-//   FUNCTION: CServiceBase::OnStart(DWORD, PWSTR *)
+//   FUNCTION: CServiceBase::OnStart(DWORD, PSTR *)
 //
 //   PURPOSE: When implemented in a derived class, executes when a Start 
 //   command is sent to the service by the SCM or when the operating system 
@@ -252,7 +252,7 @@ void CServiceBase::Start(DWORD dwArgc, PWSTR *pszArgv)
 //   * dwArgc   - number of command line arguments
 //   * lpszArgv - array of command line arguments
 //
-void CServiceBase::OnStart(DWORD dwArgc, PWSTR *pszArgv)
+void CServiceBase::OnStart(DWORD dwArgc, PSTR *pszArgv)
 {
 }
 
@@ -282,7 +282,7 @@ void CServiceBase::Stop()
     catch (DWORD dwError)
     {
         // Log the error.
-        WriteErrorLogEntry(L"Service Stop", dwError);
+        WriteErrorLogEntry("Service Stop", dwError);
 
         // Set the orginal service status.
         SetServiceStatus(dwOriginalState);
@@ -290,7 +290,7 @@ void CServiceBase::Stop()
     catch (...)
     {
         // Log the error.
-        WriteEventLogEntry(L"Service failed to stop.", EVENTLOG_ERROR_TYPE);
+        WriteEventLogEntry("Service failed to stop.", EVENTLOG_ERROR_TYPE);
 
         // Set the orginal service status.
         SetServiceStatus(dwOriginalState);
@@ -337,7 +337,7 @@ void CServiceBase::Pause()
     catch (DWORD dwError)
     {
         // Log the error.
-        WriteErrorLogEntry(L"Service Pause", dwError);
+        WriteErrorLogEntry("Service Pause", dwError);
 
         // Tell SCM that the service is still running.
         SetServiceStatus(SERVICE_RUNNING);
@@ -345,7 +345,7 @@ void CServiceBase::Pause()
     catch (...)
     {
         // Log the error.
-        WriteEventLogEntry(L"Service failed to pause.", EVENTLOG_ERROR_TYPE);
+        WriteEventLogEntry("Service failed to pause.", EVENTLOG_ERROR_TYPE);
 
         // Tell SCM that the service is still running.
         SetServiceStatus(SERVICE_RUNNING);
@@ -390,7 +390,7 @@ void CServiceBase::Continue()
     catch (DWORD dwError)
     {
         // Log the error.
-        WriteErrorLogEntry(L"Service Continue", dwError);
+        WriteErrorLogEntry("Service Continue", dwError);
 
         // Tell SCM that the service is still paused.
         SetServiceStatus(SERVICE_PAUSED);
@@ -398,7 +398,7 @@ void CServiceBase::Continue()
     catch (...)
     {
         // Log the error.
-        WriteEventLogEntry(L"Service failed to resume.", EVENTLOG_ERROR_TYPE);
+        WriteEventLogEntry("Service failed to resume.", EVENTLOG_ERROR_TYPE);
 
         // Tell SCM that the service is still paused.
         SetServiceStatus(SERVICE_PAUSED);
@@ -439,12 +439,12 @@ void CServiceBase::Shutdown()
     catch (DWORD dwError)
     {
         // Log the error.
-        WriteErrorLogEntry(L"Service Shutdown", dwError);
+        WriteErrorLogEntry("Service Shutdown", dwError);
     }
     catch (...)
     {
         // Log the error.
-        WriteEventLogEntry(L"Service failed to shut down.", EVENTLOG_ERROR_TYPE);
+        WriteEventLogEntry("Service failed to shut down.", EVENTLOG_ERROR_TYPE);
     }
 }
 
@@ -499,7 +499,7 @@ void CServiceBase::SetServiceStatus(DWORD dwCurrentState,
 
 
 //
-//   FUNCTION: CServiceBase::WriteEventLogEntry(PWSTR, WORD)
+//   FUNCTION: CServiceBase::WriteEventLogEntry(PSTR, WORD)
 //
 //   PURPOSE: Log a message to the Application event log.
 //
@@ -515,10 +515,10 @@ void CServiceBase::SetServiceStatus(DWORD dwCurrentState,
 //     EVENTLOG_INFORMATION_TYPE
 //     EVENTLOG_WARNING_TYPE
 //
-void CServiceBase::WriteEventLogEntry(PWSTR pszMessage, WORD wType)
+void CServiceBase::WriteEventLogEntry(PSTR pszMessage, WORD wType)
 {
     HANDLE hEventSource = NULL;
-    LPCWSTR lpszStrings[2] = { NULL, NULL };
+    LPCSTR lpszStrings[2] = { NULL, NULL };
 
     hEventSource = RegisterEventSource(NULL, m_name);
     if (hEventSource)
@@ -543,7 +543,7 @@ void CServiceBase::WriteEventLogEntry(PWSTR pszMessage, WORD wType)
 
 
 //
-//   FUNCTION: CServiceBase::WriteErrorLogEntry(PWSTR, DWORD)
+//   FUNCTION: CServiceBase::WriteErrorLogEntry(PSTR, DWORD)
 //
 //   PURPOSE: Log an error message to the Application event log.
 //
@@ -551,11 +551,11 @@ void CServiceBase::WriteEventLogEntry(PWSTR pszMessage, WORD wType)
 //   * pszFunction - the function that gives the error
 //   * dwError - the error code
 //
-void CServiceBase::WriteErrorLogEntry(PWSTR pszFunction, DWORD dwError)
+void CServiceBase::WriteErrorLogEntry(PSTR pszFunction, DWORD dwError)
 {
-    wchar_t szMessage[260];
+    char szMessage[260];
     StringCchPrintf(szMessage, ARRAYSIZE(szMessage), 
-        L"%s failed w/err 0x%08lx", pszFunction, dwError);
+        "%s failed w/err 0x%08lx", pszFunction, dwError);
     WriteEventLogEntry(szMessage, EVENTLOG_ERROR_TYPE);
 }
 

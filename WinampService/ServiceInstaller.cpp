@@ -42,20 +42,20 @@
 //   NOTE: If the function fails to install the service, it prints the error 
 //   in the standard output stream for users to diagnose the problem.
 //
-void InstallService(PWSTR pszServiceName, 
-                    PWSTR pszDisplayName, 
+void InstallService(PSTR pszServiceName, 
+                    PSTR pszDisplayName, 
                     DWORD dwStartType,
-                    PWSTR pszDependencies, 
-                    PWSTR pszAccount, 
-                    PWSTR pszPassword)
+                    PSTR pszDependencies, 
+                    PSTR pszAccount, 
+                    PSTR pszPassword)
 {
-    wchar_t szPath[MAX_PATH];
+    char szPath[MAX_PATH];
     SC_HANDLE schSCManager = NULL;
     SC_HANDLE schService = NULL;
 
     if (GetModuleFileName(NULL, szPath, ARRAYSIZE(szPath)) == 0)
     {
-        wprintf(L"GetModuleFileName failed w/err 0x%08lx\n", GetLastError());
+        printf("GetModuleFileName failed w/err 0x%08lx\n", GetLastError());
         goto Cleanup;
     }
 
@@ -64,7 +64,7 @@ void InstallService(PWSTR pszServiceName,
         SC_MANAGER_CREATE_SERVICE);
     if (schSCManager == NULL)
     {
-        wprintf(L"OpenSCManager failed w/err 0x%08lx\n", GetLastError());
+        printf("OpenSCManager failed w/err 0x%08lx\n", GetLastError());
         goto Cleanup;
     }
 
@@ -86,11 +86,11 @@ void InstallService(PWSTR pszServiceName,
         );
     if (schService == NULL)
     {
-        wprintf(L"CreateService failed w/err 0x%08lx\n", GetLastError());
+        printf("CreateService failed w/err 0x%08lx\n", GetLastError());
         goto Cleanup;
     }
 
-    wprintf(L"%s is installed.\n", pszServiceName);
+    printf("%s is installed.\n", pszServiceName);
 
 Cleanup:
     // Centralized cleanup for all allocated resources.
@@ -119,7 +119,7 @@ Cleanup:
 //   NOTE: If the function fails to uninstall the service, it prints the 
 //   error in the standard output stream for users to diagnose the problem.
 //
-void UninstallService(PWSTR pszServiceName)
+void UninstallService(PSTR pszServiceName)
 {
     SC_HANDLE schSCManager = NULL;
     SC_HANDLE schService = NULL;
@@ -129,7 +129,7 @@ void UninstallService(PWSTR pszServiceName)
     schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT);
     if (schSCManager == NULL)
     {
-        wprintf(L"OpenSCManager failed w/err 0x%08lx\n", GetLastError());
+        printf("OpenSCManager failed w/err 0x%08lx\n", GetLastError());
         goto Cleanup;
     }
 
@@ -138,21 +138,21 @@ void UninstallService(PWSTR pszServiceName)
         SERVICE_QUERY_STATUS | DELETE);
     if (schService == NULL)
     {
-        wprintf(L"OpenService failed w/err 0x%08lx\n", GetLastError());
+        printf("OpenService failed w/err 0x%08lx\n", GetLastError());
         goto Cleanup;
     }
 
     // Try to stop the service
     if (ControlService(schService, SERVICE_CONTROL_STOP, &ssSvcStatus))
     {
-        wprintf(L"Stopping %s.", pszServiceName);
+        printf("Stopping %s.", pszServiceName);
         Sleep(1000);
 
         while (QueryServiceStatus(schService, &ssSvcStatus))
         {
             if (ssSvcStatus.dwCurrentState == SERVICE_STOP_PENDING)
             {
-                wprintf(L".");
+                printf(".");
                 Sleep(1000);
             }
             else break;
@@ -160,22 +160,22 @@ void UninstallService(PWSTR pszServiceName)
 
         if (ssSvcStatus.dwCurrentState == SERVICE_STOPPED)
         {
-            wprintf(L"\n%s is stopped.\n", pszServiceName);
+            printf("\n%s is stopped.\n", pszServiceName);
         }
         else
         {
-            wprintf(L"\n%s failed to stop.\n", pszServiceName);
+            printf("\n%s failed to stop.\n", pszServiceName);
         }
     }
 
     // Now remove the service by calling DeleteService.
     if (!DeleteService(schService))
     {
-        wprintf(L"DeleteService failed w/err 0x%08lx\n", GetLastError());
+        printf("DeleteService failed w/err 0x%08lx\n", GetLastError());
         goto Cleanup;
     }
 
-    wprintf(L"%s is removed.\n", pszServiceName);
+    printf("%s is removed.\n", pszServiceName);
 
 Cleanup:
     // Centralized cleanup for all allocated resources.

@@ -1,7 +1,7 @@
 #include "WinampService.h"
 #include "WinampRequestListener.h"
 
-WinampService::WinampService(PWSTR pszServiceName, 
+WinampService::WinampService(PSTR pszServiceName, 
                                BOOL fCanStop, 
                                BOOL fCanShutdown, 
                                BOOL fCanPauseContinue)
@@ -20,7 +20,7 @@ WinampService::~WinampService(void)
 }
 
 //
-//   FUNCTION: WinampService::OnStart(DWORD, LPWSTR *)
+//   FUNCTION: WinampService::OnStart(DWORD, LPSTR *)
 //
 //   PURPOSE: The function is executed when a Start command is sent to the 
 //   service by the SCM or when the operating system starts (for a service 
@@ -44,10 +44,10 @@ WinampService::~WinampService(void)
 //   other solution is to spawn a new thread to perform the main service 
 //   functions, which is demonstrated in this code sample.
 //
-void WinampService::OnStart(DWORD dwArgc, LPWSTR *lpszArgv)
+void WinampService::OnStart(DWORD dwArgc, LPSTR *lpszArgv)
 {
     // Log a service start message to the Application log.
-    WriteEventLogEntry(L"WinampService in OnStart", 
+    WriteEventLogEntry("WinampService in OnStart", 
         EVENTLOG_INFORMATION_TYPE);
 
 	m_pWinampRequestListener->Start();
@@ -68,7 +68,7 @@ void WinampService::OnStart(DWORD dwArgc, LPWSTR *lpszArgv)
 void WinampService::OnStop()
 {
     // Log a service stop message to the Application log.
-    WriteEventLogEntry(L"CppWindowsService in OnStop", 
+    WriteEventLogEntry("CppWindowsService in OnStop", 
         EVENTLOG_INFORMATION_TYPE);
 
 	m_pWinampRequestListener->Stop();

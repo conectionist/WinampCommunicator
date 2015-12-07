@@ -38,12 +38,12 @@
 //   NOTE: If the function fails to install the service, it prints the error 
 //   in the standard output stream for users to diagnose the problem.
 //
-void InstallService(PWSTR pszServiceName, 
-                    PWSTR pszDisplayName, 
+void InstallService(PSTR pszServiceName, 
+                    PSTR pszDisplayName, 
                     DWORD dwStartType,
-                    PWSTR pszDependencies, 
-                    PWSTR pszAccount, 
-                    PWSTR pszPassword);
+                    PSTR pszDependencies, 
+                    PSTR pszAccount, 
+                    PSTR pszPassword);
 
 
 //
@@ -58,4 +58,4 @@ void InstallService(PWSTR pszServiceName,
 //   NOTE: If the function fails to uninstall the service, it prints the 
 //   error in the standard output stream for users to diagnose the problem.
 //
-void UninstallService(PWSTR pszServiceName);
+void UninstallService(PSTR pszServiceName);
