@@ -7,14 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace WinampRemoteCommander
 {
     public partial class Form1 : Form
     {
+        private AsyncServer server;
+        private Thread serverThread;
+
         public Form1()
         {
             InitializeComponent();
+
+            server = new AsyncServer();
+
+            serverThread = new Thread(new ThreadStart(server.StartListening));
         }
 
         private async void Form1_Load(object sender, EventArgs e)
@@ -43,6 +51,8 @@ namespace WinampRemoteCommander
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            server.SignalShutdown();
+
             Application.Exit();
         }
 
@@ -53,7 +63,7 @@ namespace WinampRemoteCommander
 
         private void StartReceivingRemoteCommands()
         {
-
+            serverThread.Start();
         }
     }
 }
