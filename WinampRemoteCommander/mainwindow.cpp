@@ -33,11 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if(!server->listen(QHostAddress::Any, 4567))
         trayIcon->showMessage("Error", "Server could not start",QSystemTrayIcon::Critical);
-//    else
-//        trayIcon->showMessage("Server started",
-//                              "Winamp remote commander is up and running",
-//                              QSystemTrayIcon::Information,
-//                              2000);
 }
 
 MainWindow::~MainWindow()
@@ -68,7 +63,9 @@ void MainWindow::OnNewCommand()
     if(socket->bytesAvailable())
     {
         QString msg = socket->readAll();
-        HandleCommand(msg);
+        QString response = HandleCommand(msg);
+
+        socket->write(response.toUtf8());
     }
 }
 
@@ -80,25 +77,35 @@ WinampCommand MainWindow::TranslateReceivedMessageIntoCommand(QString msg)
     if(msg.endsWith("\r"))
         msg.remove("\r");
 
-    if (msg == "z")
+    switch(msg[0].toLatin1())
+    {
+    case 'z':
         return WinampCmd_Previous;
-    else if (msg == "x")
+    case 'x':
         return WinampCmd_Play;
-    else if (msg == "c")
+    case 'c':
         return WinampCmd_Pause;
-    else if (msg == "v")
+    case 'v':
         return WinampCmd_Stop;
-    else if (msg == "b")
+    case 'b':
         return WinampCmd_Next;
-    else
+    case '+':
+        return WinampCmd_VolumeUp;
+    case '-':
+        return WinampCmd_VolumeDown;
+    case 's':
+        return WinampCmd_SetVolume;
+    case 't':
+        return WinampCmd_CurrentTrack;
+    default:
         return WinampCmd_Invalid;
+    }
 }
 
-void MainWindow::HandleCommand(const QString &message)
+QString MainWindow::HandleCommand(const QString &message)
 {
-    trayIcon->showMessage("New Message", message);
-
     WinampCommand cmd = TranslateReceivedMessageIntoCommand(message);
+    QString response = "ok";
 
     try
     {
@@ -119,14 +126,30 @@ void MainWindow::HandleCommand(const QString &message)
         case WinampCmd_Next:
             m_pWinampCommunicator->NextTrack();
             break;
+        case WinampCmd_VolumeUp:
+            m_pWinampCommunicator->RaiseVolume();
+            break;
+        case WinampCmd_VolumeDown:
+            m_pWinampCommunicator->LowerVolume();
+            break;
+        case WinampCmd_SetVolume:
+            m_pWinampCommunicator->SetVolume(message.mid(1).toInt());
+            break;
+        case WinampCmd_CurrentTrack:
+            response = "t";
+            response += m_pWinampCommunicator->GetCurrentTrackName().c_str();
+            break;
         case WinampCmd_Invalid:
         default:
-            trayIcon->showMessage("Error: Unknown message", message, QSystemTrayIcon::Critical);
+            trayIcon->showMessage("Error: Unknown message", message, QSystemTrayIcon::Critical, 3000);
             break;
         }
     }
     catch (const NotRunningException& nrex)
     {
         trayIcon->showMessage("Error", nrex.GetErrorMessage().c_str(), QSystemTrayIcon::Critical);
+        response = "Not running";
     }
+
+    return response;
 }

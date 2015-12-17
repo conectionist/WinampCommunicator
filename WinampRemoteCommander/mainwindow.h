@@ -18,7 +18,11 @@ enum WinampCommand
     WinampCmd_Play,
     WinampCmd_Pause,
     WinampCmd_Stop,
-    WinampCmd_Next
+    WinampCmd_Next,
+    WinampCmd_VolumeUp,
+    WinampCmd_VolumeDown,
+    WinampCmd_SetVolume,
+    WinampCmd_CurrentTrack
 };
 
 namespace Ui {
@@ -50,7 +54,7 @@ private slots:
 
 protected:
     WinampCommand TranslateReceivedMessageIntoCommand(QString message);
-    void HandleCommand(const QString& message);
+    QString HandleCommand(const QString& message);
 };
 
 #endif // MAINWINDOW_H
